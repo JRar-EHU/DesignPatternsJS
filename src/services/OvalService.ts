@@ -30,7 +30,7 @@ export default class OvalService {
 
   static isOval(oval: Oval): boolean {
     const result = oval.p1.x !== oval.p2.x && oval.p1.y !== oval.p2.y;
-    logger.info({ isCircle: result }, 'Circle check completed');
+    logger.info({ isOval: result }, 'Oval check completed');
     return result;
   }
 

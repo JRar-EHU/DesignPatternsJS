@@ -10,8 +10,4 @@ export default class Point {
     this.y = y;
     this.z = z;
   }
-
-  toString(): string {
-    return `${this.x},${this.y},${this.z}`;
-  }
 }

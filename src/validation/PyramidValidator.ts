@@ -2,6 +2,7 @@ import BaseValidator from './BaseValidator';
 import ValidationError from '../errors/ValidationError';
 import { SPACE } from '../data/constants';
 import logger from '../logger/Logger';
+import InvalidDataError from '../errors/InvalidDataError';
 
 export default class PyramidValidator extends BaseValidator {
   static validateLine(line: string): void {
@@ -9,7 +10,7 @@ export default class PyramidValidator extends BaseValidator {
 
     if (parts.length !== 10) {
       logger.error('Pyramid requires 1 ID + 9 numeric values.');
-      throw new ValidationError('Pyramid requires 1 ID + 9 numeric values.');
+      throw new InvalidDataError('Pyramid requires 1 ID + 9 numeric values.');
     }
 
     const numericParts = parts.slice(1);

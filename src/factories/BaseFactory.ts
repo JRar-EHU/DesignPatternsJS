@@ -2,6 +2,7 @@ import Shape from '../entities/Shape';
 import { SPACE } from '../data/constants';
 import logger from '../logger/Logger';
 import ValidationError from '../errors/ValidationError';
+import InvalidDataError from '../errors/InvalidDataError';
 
 export default abstract class BaseFactory {
   private static registry = new Map<string, typeof BaseFactory>();
@@ -15,12 +16,12 @@ export default abstract class BaseFactory {
     const Factory = this.registry.get(type);
     if (!Factory) {
       logger.error(`Unknown shape type: ${type}`);
-      throw new ValidationError(`Unknown shape type: ${type}`);
+      throw new InvalidDataError(`Unknown shape type: ${type}`);
     }
     return Factory.createShape(line);
   }
 
-  protected static createShape(line: string): Shape {
+  protected static createShape(_line: string): Shape {
     throw new ValidationError('Method not implemented in concrete factory');
   }
 

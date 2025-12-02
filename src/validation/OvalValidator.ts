@@ -2,6 +2,7 @@ import BaseValidator from './BaseValidator';
 import ValidationError from '../errors/ValidationError';
 import { SPACE } from '../data/constants';
 import logger from '../logger/Logger';
+import InvalidDataError from '../errors/InvalidDataError';
 
 export default class OvalValidator extends BaseValidator {
   static validateLine(line: string): void {
@@ -9,7 +10,7 @@ export default class OvalValidator extends BaseValidator {
 
     if (parts.length !== 5) {
       logger.error('Oval requires 1 ID + 4 numeric values.');
-      throw new ValidationError('Oval requires 1 ID + 4 numeric values.');
+      throw new InvalidDataError('Oval requires 1 ID + 4 numeric values.');
     }
 
     const numericParts = parts.slice(1);

@@ -9,7 +9,6 @@ export default class PyramidService {
     const side2 = this.triangleArea(p.baseP2, p.apex, p.baseP1);
     const side3 = this.triangleArea(p.apex, p.baseP1, p.baseP2);
     const result = base + side1 + side2 + side3;
-    logger.info({ area: result }, 'Pyramid surface area calculated');
     return result;
   }
 
@@ -17,19 +16,16 @@ export default class PyramidService {
     const base = this.baseArea(p);
     const height = Math.abs(p.apex.z - p.baseP1.z);
     const result = (1 / 3) * base * height;
-    logger.info({ volume: result }, 'Pyramid volume calculated');
     return result;
   }
 
   static isPyramid(p: Pyramid): boolean {
     const result = !this.areCollinear(p.baseP1, p.baseP2, new Point(p.baseP1.x, p.baseP2.y, p.baseP1.z));
-    logger.info({ isPyramid: result }, 'Pyramid validity check completed');
     return result;
   }
 
   static isBaseOnCoordinatePlane(p: Pyramid): boolean {
     const result = p.baseP1.z === 0 && p.baseP2.z === 0;
-    logger.info({ baseOnPlane: result }, 'Coordinate plane check completed');
     return result;
   }
 
