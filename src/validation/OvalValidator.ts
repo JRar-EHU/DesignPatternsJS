@@ -3,10 +3,15 @@ import ValidationError from '../errors/ValidationError';
 import { SPACE } from '../data/constants';
 import logger from '../logger/Logger';
 import InvalidDataError from '../errors/InvalidDataError';
+import { checkNumbers } from '../utils/utils';
 
 export default class OvalValidator extends BaseValidator {
-  static validateLine(line: string): void {
-    const parts = line.trim().split(SPACE);
+  constructor(private line: string) {
+    super();
+  }
+
+  validateLine(): void {
+    const parts = this.line.trim().split(SPACE);
 
     if (parts.length !== 5) {
       logger.error('Oval requires 1 ID + 4 numeric values.');
@@ -15,7 +20,7 @@ export default class OvalValidator extends BaseValidator {
 
     const numericParts = parts.slice(1);
 
-    BaseValidator.checkNumbers(numericParts);
+    checkNumbers(numericParts);
 
     const [x1, y1, x2, y2] = numericParts.map(Number);
     if (x1 === x2 || y1 === y2) {

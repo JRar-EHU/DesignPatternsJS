@@ -1,34 +1,23 @@
 import Shape from '../entities/Shape';
-import { SPACE } from '../data/constants';
-import logger from '../logger/Logger';
-import ValidationError from '../errors/ValidationError';
-import InvalidDataError from '../errors/InvalidDataError';
+import BaseValidator from '../validation/BaseValidator';
+import { parseNumbers } from '../utils/utils';
 
 export default abstract class BaseFactory {
-  private static registry = new Map<string, typeof BaseFactory>();
+  protected readonly line: string;
 
-  static register(type: string, factory: typeof BaseFactory) {
-    this.registry.set(type, factory);
-  }
+  protected readonly id: string;
 
-  static create(line: string): Shape {
-    const type = line.split(SPACE)[0].slice(0, 2);
-    const Factory = this.registry.get(type);
-    if (!Factory) {
-      logger.error(`Unknown shape type: ${type}`);
-      throw new InvalidDataError(`Unknown shape type: ${type}`);
-    }
-    return Factory.createShape(line);
-  }
+  protected readonly nums: number[];
 
-  protected static createShape(_line: string): Shape {
-    throw new ValidationError('Method not implemented in concrete factory');
+  protected constructor(
+    line: string,
+    ValidatorClass: new (line: string) => BaseValidator,
+  ) {
+    this.line = line;
+    new ValidatorClass(line).validateLine();
+    const { id, nums } = parseNumbers(line);
+    this.id = id;
+    this.nums = nums;
   }
-
-  protected static parseNumbers(line: string): { id: string; nums: number[] } {
-    const parts = line.trim().split(SPACE);
-    const id = parts[0];
-    const nums = parts.slice(1).map(Number);
-    return { id, nums };
-  }
+  abstract createShape(): Shape;
 }
