@@ -7,7 +7,7 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "types": ["node","mocha","chai"]
+    "types": ["node"]
   },
   "include": ["src", "tests"]
 }

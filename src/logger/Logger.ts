@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DATE_ISO_FORMAT, DATE_ISO_FORMAT_REPLACE } from '../data/constants';
 
-const logDir = path.resolve('./logger/logs');
+const projectRoot = path.resolve(__dirname, '../../');
+const logDir = path.join(projectRoot, 'src/logger/logs');
 
 const timestamp = new Date()
   .toISOString()

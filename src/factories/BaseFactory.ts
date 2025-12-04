@@ -3,21 +3,15 @@ import BaseValidator from '../validation/BaseValidator';
 import { parseNumbers } from '../utils/utils';
 
 export default abstract class BaseFactory {
-  protected readonly line: string;
-
-  protected readonly id: string;
-
-  protected readonly nums: number[];
-
   protected constructor(
-    line: string,
-    ValidatorClass: new (line: string) => BaseValidator,
-  ) {
-    this.line = line;
-    new ValidatorClass(line).validateLine();
-    const { id, nums } = parseNumbers(line);
-    this.id = id;
-    this.nums = nums;
+    protected readonly type: string,
+    protected readonly ValidatorClass: new(line: string) => BaseValidator,
+  ) {}
+
+  protected parseAndValidate(line: string) {
+    const validator = new this.ValidatorClass(line);
+    validator.validateLine();
+    return parseNumbers(line);
   }
-  abstract createShape(): Shape;
+  abstract createShape(line: string): Shape;
 }

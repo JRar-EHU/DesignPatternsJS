@@ -1,17 +1,20 @@
-import Oval from '../entities/Oval';
-import Point from '../entities/Point';
-import OvalValidator from '../validation/OvalValidator';
 import BaseFactory from './BaseFactory';
+import Oval from '../entities/Oval';
+import OvalValidator from '../validation/OvalValidator';
+import Point from '../entities/Point';
+import logger from '../logger/Logger';
 
 export default class OvalFactory extends BaseFactory {
-  constructor(line: string) {
-    super(line, OvalValidator);
+  constructor() {
+    super('OV', OvalValidator);
+    logger.info('Oval Factory created!');
   }
 
-  createShape(): Oval {
-    const [x1, y1, x2, y2] = this.nums;
+  createShape(line: string): Oval {
+    const { id, nums } = this.parseAndValidate(line);
+    const [x1, y1, x2, y2] = nums;
     return new Oval(
-      this.id,
+      id,
       new Point(x1, y1),
       new Point(x2, y2),
     );

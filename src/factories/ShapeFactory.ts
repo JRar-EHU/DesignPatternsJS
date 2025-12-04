@@ -4,25 +4,28 @@ import InvalidDataError from '../errors/InvalidDataError';
 import BaseFactory from './BaseFactory';
 
 export default class ShapeFactory {
-  private registry: Map<string, (line: string) => BaseFactory>;
+  private registry: Map<string, BaseFactory>;
 
   constructor(
-    registry: Map<string, (line: string) => BaseFactory> = new Map(),
+    registry: Map<string, BaseFactory> = new Map(),
   ) {
     this.registry = registry;
   }
 
   create(line: string): Shape {
-    const type = line.trim().substring(0, 2).toUpperCase();
+    const type = line
+      .trim()
+      .substring(0, 2)
+      .toUpperCase();
     const Factory = this.registry.get(type);
     if (!Factory) {
       logger.error(`Unknown shape type: ${type}`);
       throw new InvalidDataError(`Unknown shape type: ${type}`);
     }
-    return Factory(line).createShape();
+    return Factory.createShape(line);
   }
 
-  register(prefix: string, builder: (line: string) => BaseFactory): void {
-    this.registry.set(prefix.toUpperCase(), builder);
+  register(type: string, factory: BaseFactory) {
+    this.registry.set(type, factory);
   }
 }

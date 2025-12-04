@@ -10,8 +10,8 @@ import PyramidService from './services/PyramidService';
 
 const lines = readLines('./data/testData.txt');
 const factory = new ShapeFactory();
-factory.register('OV', (line) => new OvalFactory(line));
-factory.register('PY', (line) => new PyramidFactory(line));
+factory.register('OV', new OvalFactory());
+factory.register('PY', new PyramidFactory());
 
 const shapes = lines
   .map((line) => {
