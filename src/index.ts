@@ -7,16 +7,22 @@ import Oval from './entities/Oval';
 import OvalService from './services/OvalService';
 import Pyramid from './entities/Pyramid';
 import PyramidService from './services/PyramidService';
+import Repository from './repository/Repository';
+import SpecId from './repository/specifications/SpecId';
+import SortById from './repository/sort/SortById';
 
 const lines = readLines('./data/testData.txt');
 const factory = new ShapeFactory();
 factory.register('OV', new OvalFactory());
 factory.register('PY', new PyramidFactory());
+const repository = new Repository();
 
 const shapes = lines
   .map((line) => {
     try {
-      return factory.create(line);
+      const shape = factory.create(line);
+      repository.add(shape);
+      return shape;
     } catch {
       logger.error(`Failed to create object ${line}`);
       return null;
@@ -24,7 +30,7 @@ const shapes = lines
   })
   .filter(Boolean);
 
-logger.info(shapes);
+logger.info(`Repo and shapes sync ${shapes.length === repository.getAll().length}`);
 
 shapes
   .filter((shape) => shape instanceof Oval)
@@ -33,3 +39,16 @@ shapes
 shapes
   .filter((shape) => shape instanceof Pyramid)
   .forEach((shape) => new PyramidService(shape).runAllServices());
+
+logger.info(`Initial repo: ${repository.getAll().map((s) => s.id)}`);
+repository.remove('OV1');
+logger.info(`OV1 removed: ${repository.getAll().map((s) => s.id)}`);
+repository.add(shapes[0]!);
+logger.info(`OV1 added: ${repository.getAll().map((s) => s.id)}`);
+
+logger.info('Looking for OV3');
+logger.info(repository.find(new SpecId('OV3')));
+
+logger.info(`Unsorted repo: ${repository.getAll().map((s) => s.id)}`);
+repository.sort(new SortById());
+logger.info(`Sorted repo by id: ${repository.getAll().map((s) => s.id)}`);
