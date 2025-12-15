@@ -10,13 +10,25 @@ import PyramidService from './services/PyramidService';
 import Repository from './repository/Repository';
 import SpecId from './repository/specifications/SpecId';
 import SortById from './repository/sort/SortById';
+import Warehouse from './warehouse/Warehouse';
+import ShapeObserver from './observer/ShapeObserver';
+import Point from './entities/Point';
+import PyramidUpdateService from './services/PyramidUpdateService';
 
 const lines = readLines('./data/testData.txt');
+
+const repository = new Repository();
+logger.info('Repo created');
+
+const warehouse = Warehouse.getInstance();
+const observer = new ShapeObserver(warehouse);
+logger.info('Observer created');
+repository.attach(observer);
+logger.info(`Observer attached ${repository.observers}`);
+
 const factory = new ShapeFactory();
 factory.register('OV', new OvalFactory());
 factory.register('PY', new PyramidFactory());
-const repository = new Repository();
-
 const shapes = lines
   .map((line) => {
     try {
@@ -31,6 +43,34 @@ const shapes = lines
   .filter(Boolean);
 
 logger.info(`Repo and shapes sync ${shapes.length === repository.getAll().length}`);
+
+logger.info('\n \n TESTS STARTED \n');
+
+logger.info(warehouse.get('OV1', 'area'));
+logger.info(warehouse.get('PY1', 'surfaceArea'));
+
+console.log(warehouse.getAll('PY1'));
+repository.remove('PY1');
+console.log(warehouse.getAll('PY1'));
+
+const [targetPyramid] = repository
+  .find(new SpecId('PY2'))
+  .filter((s): s is Pyramid => s instanceof Pyramid);
+
+const pyramidService = new PyramidService(targetPyramid);
+const pyramidUpdateService = new PyramidUpdateService(repository);
+
+console.log(targetPyramid);
+console.log(pyramidService.surfaceArea());
+
+pyramidUpdateService.update(
+  targetPyramid,
+  new Point(0, 0, 0),
+  new Point(0, 10, 0),
+  new Point(5, 5, 20),
+);
+console.log(targetPyramid);
+console.log(pyramidService.surfaceArea());
 
 shapes
   .filter((shape) => shape instanceof Oval)

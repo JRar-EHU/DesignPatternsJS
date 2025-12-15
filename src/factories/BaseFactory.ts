@@ -10,7 +10,7 @@ export default abstract class BaseFactory {
 
   protected parseAndValidate(line: string) {
     const validator = new this.ValidatorClass(line);
-    validator.validateLine();
+    validator.validate();
     return parseNumbers(line);
   }
   abstract createShape(line: string): Shape;

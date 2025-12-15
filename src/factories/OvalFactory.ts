@@ -1,12 +1,12 @@
 import BaseFactory from './BaseFactory';
 import Oval from '../entities/Oval';
-import OvalValidator from '../validation/OvalValidator';
+import OvalLineValidator from '../validation/OvalLineValidator';
 import Point from '../entities/Point';
 import logger from '../logger/Logger';
 
 export default class OvalFactory extends BaseFactory {
   constructor() {
-    super('OV', OvalValidator);
+    super('OV', OvalLineValidator);
     logger.info('Oval Factory created!');
   }
 

@@ -1,22 +1,23 @@
 import Pyramid from '../entities/Pyramid';
-import { triangleArea, areCollinear3D, rectangleArea } from '../utils/utils';
+import { areCollinear3D, rectangleArea3D, triangleArea3D } from '../utils/utils';
 import logger from '../logger/Logger';
 
 export default class PyramidService {
   constructor(private p: Pyramid) {}
 
   surfaceArea(): number {
-    const base = rectangleArea(this.p.p1, this.p.p2);
-    const side1 = triangleArea(this.p.p1, this.p.p2, this.p.apex);
-    const side2 = triangleArea(this.p.p2, this.p.apex, this.p.p1);
-    const side3 = triangleArea(this.p.apex, this.p.p1, this.p.p2);
+    const base = rectangleArea3D(this.p.p1, this.p.p2);
+    const side1 = triangleArea3D(this.p.p1, this.p.p2, this.p.apex);
+    const side2 = triangleArea3D(this.p.p2, this.p.apex, this.p.p1);
+    const side3 = triangleArea3D(this.p.apex, this.p.p1, this.p.p2);
+
     const result = base + side1 + side2 + side3;
     logger.info(`${this.p.id} Surface area is ${result}`);
     return result;
   }
 
   volume(): number {
-    const base = rectangleArea(this.p.p1, this.p.p2);
+    const base = rectangleArea3D(this.p.p1, this.p.p2);
     const height = Math.abs(this.p.apex.z - this.p.p1.z);
     const result = (1 / 3) * base * height;
     logger.info(`${this.p.id} Volume is ${result}`);

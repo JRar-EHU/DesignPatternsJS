@@ -1,12 +1,12 @@
 import BaseFactory from './BaseFactory';
 import Pyramid from '../entities/Pyramid';
-import PyramidValidator from '../validation/PyramidValidator';
+import PyramidLineValidator from '../validation/PyramidLineValidator';
 import Point from '../entities/Point';
 import logger from '../logger/Logger';
 
 export default class PyramidFactory extends BaseFactory {
   constructor() {
-    super('PY', PyramidValidator);
+    super('PY', PyramidLineValidator);
     logger.info('Pyramid Factory created!');
   }
 

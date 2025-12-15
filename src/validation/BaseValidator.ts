@@ -1,3 +1,3 @@
 export default abstract class BaseValidator {
-  abstract validateLine(): void;
+  abstract validate(): void;
 }

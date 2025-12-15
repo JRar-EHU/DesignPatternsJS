@@ -19,7 +19,7 @@ describe('PyramidService', () => {
 
   test('should calculate surface area', () => {
     const area = service.surfaceArea();
-    expect(area).toBe(4);
+    expect(area).toBeCloseTo(16.727);
   });
 
   test('should check if test is a pyramid', () => {

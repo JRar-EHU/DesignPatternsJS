@@ -16,4 +16,12 @@ export default class Oval extends Shape {
     this.p2 = p2;
     this.points = [p1, p2];
   }
+
+  public setP1(point: Point) {
+    this.p1 = point;
+  }
+
+  public setP2(point: Point) {
+    this.p2 = point;
+  }
 }

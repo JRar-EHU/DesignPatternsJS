@@ -19,4 +19,16 @@ export default class Pyramid extends Shape {
     this.apex = apex;
     this.points = [p1, p2, apex];
   }
+
+  public setP1(point: Point) {
+    this.p1 = point;
+  }
+
+  public setP2(point: Point) {
+    this.p2 = point;
+  }
+
+  public setApex(apex: Point) {
+    this.apex = apex;
+  }
 }

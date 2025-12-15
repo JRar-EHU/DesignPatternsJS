@@ -5,12 +5,12 @@ import logger from '../logger/Logger';
 import InvalidDataError from '../errors/InvalidDataError';
 import { checkNumbers } from '../utils/utils';
 
-export default class OvalValidator extends BaseValidator {
+export default class OvalLineValidator extends BaseValidator {
   constructor(private line: string) {
     super();
   }
 
-  validateLine(): void {
+  validate(): void {
     const parts = this.line.trim().split(SPACE);
 
     if (parts.length !== 5) {
