@@ -5,18 +5,14 @@ export default abstract class News {
 
   readonly text: string;
 
-  readonly sources: string[];
-
   protected constructor(
     type: string,
     title: string,
     text: string,
-    sources: string[],
   ) {
     this.type = type;
     this.title = title;
     this.text = text;
-    this.sources = sources;
   }
 
   getType(): string {

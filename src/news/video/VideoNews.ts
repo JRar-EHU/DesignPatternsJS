@@ -6,10 +6,9 @@ export default class VideoNews extends News {
   constructor(
     title: string,
     text: string,
-    sources: string[],
     videoUrl: string,
   ) {
-    super('video', title, text, sources);
+    super('video', title, text);
     this.videoUrl = videoUrl;
   }
 

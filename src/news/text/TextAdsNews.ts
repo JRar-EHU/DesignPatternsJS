@@ -6,10 +6,9 @@ export default class TextAdsNews extends News {
   constructor(
     title: string,
     text: string,
-    sources: string[],
     sponsor: string,
   ) {
-    super('textAd', title, text, sources);
+    super('textAd', title, text);
     this.sponsor = sponsor;
   }
 

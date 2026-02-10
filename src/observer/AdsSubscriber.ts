@@ -1,7 +1,7 @@
-import IObserver from './IObserver';
+import ISubscriber from './ISubscriber';
 import News from '../news/News';
 
-export default class AdsObserver implements IObserver {
+export default class AdsSubscriber implements ISubscriber {
   public adsNews: News[] = [];
 
   update(news: News) {

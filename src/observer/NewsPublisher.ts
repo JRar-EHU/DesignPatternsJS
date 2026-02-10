@@ -1,9 +1,9 @@
 import News from '../news/News';
-import IObserver from './IObserver';
-import IObserverSubject from './IObserverSubject';
+import ISubscriber from './ISubscriber';
+import IPublisher from './IPublisher';
 
-export default class NewsPublisher implements IObserverSubject {
-  private observers: IObserver[] = [];
+export default class NewsPublisher implements IPublisher {
+  private observers: ISubscriber[] = [];
 
   public newsList: News[] = [];
 
@@ -12,7 +12,7 @@ export default class NewsPublisher implements IObserverSubject {
     this.notify(news);
   }
 
-  public attach(observer: IObserver): void {
+  public attach(observer: ISubscriber): void {
     const isExist = this.observers.includes(observer);
     if (isExist) {
       console.log('Subject: observer already attached');

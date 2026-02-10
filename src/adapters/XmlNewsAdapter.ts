@@ -1,32 +1,19 @@
-import IXmlNews from './IXmlNews';
 import INewsAdapter from './INewsAdapter';
 import INewsDTO from './INewsDTO';
+import XmlNewsMapper from './XmlNewsMapper';
+import XmlClient from '../data/XmlClient';
 
-export default class XmlNewsAdapter implements INewsAdapter<IXmlNews> {
-  private typeMap: Record<string, INewsDTO['type']> = {
-    Text: 'text',
-    Video: 'video',
-    Text_Advert: 'textAd',
-    Video_Advert: 'videoAd',
-  };
+export default class XmlNewsAdapter implements INewsAdapter {
+  private adapter = new XmlNewsMapper();
 
-  adapt(data: IXmlNews): INewsDTO {
-    const find = (tag: string): string | undefined => data.children
-      ?.find((c) => c.tag === tag)
-      ?.value;
+  constructor(
+    private client: XmlClient,
+  ) {
+  }
 
-    const sources = data.children
-      ?.filter((c) => c.tag === 'insight')
-      .map((c) => c.value!)
-        || [];
-
-    return {
-      type: this.typeMap[find('category')!],
-      title: find('headline') ?? '',
-      content: find('text') ?? '',
-      sources,
-      videoUrl: find('mediaLink'),
-      advertiser: find('sponsor'),
-    };
+  getNews(): INewsDTO[] {
+    return this.client
+      .fetchFeed()
+      .map((data) => this.adapter.mapToDto(data));
   }
 }

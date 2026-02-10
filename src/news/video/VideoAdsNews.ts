@@ -8,11 +8,10 @@ export default class VideoAdsNews extends News {
   constructor(
     title: string,
     text: string,
-    sources: string[],
     videoUrl: string,
     sponsor: string,
   ) {
-    super('videoAd', title, text, sources);
+    super('videoAd', title, text);
     this.videoUrl = videoUrl;
     this.sponsor = sponsor;
   }

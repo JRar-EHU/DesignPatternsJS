@@ -1,70 +1,137 @@
 import NewsPublisher from './observer/NewsPublisher';
-import TextObserver from './observer/TextObserver';
-import VideoObserver from './observer/VideoObserver';
-import AdsObserver from './observer/AdsObserver';
-import JsonNewsAdapter from './adapters/JsonNewsAdapter';
-import XmlNewsAdapter from './adapters/XmlNewsAdapter';
+import TextSubscriber from './observer/TextSubscriber';
+import VideoSubscriber from './observer/VideoSubscriber';
+import AdsSubscriber from './observer/AdsSubscriber';
+import INewsDTO from './adapters/INewsDTO';
+import News from './news/News';
 import TextNewsFactory from './factory/TextNewsFactory';
 import VideoNewsFactory from './factory/VideoNewsFactory';
+import validateDTO from './errors and validation/dtoValidator';
+import JsonClient from './data/JsonClient';
+import XmlClient from './data/XmlClient';
+import JsonNewsAdapter from './adapters/JsonNewsAdapter';
+import XmlNewsAdapter from './adapters/XmlNewsAdapter';
+import JsonNewsMapper from "./adapters/JsonNewsMapper";
+import {jsonDataset, xmlDataset} from "./data/data";
+import XmlNewsMapper from "./adapters/XmlNewsMapper";
 
-const publisher = new NewsPublisher();
+function createPublisher() {
+  const publisher = new NewsPublisher();
 
-const jsonNews = {
-  kind: 'T',
-  head: 'Breaking News!',
-  body: 'Something happened.',
-  refs: ['BBC', 'CNN'],
-  trusted: 1,
-  adClient: 'AdCompany',
-};
+  const textObserver = new TextSubscriber();
+  const videoObserver = new VideoSubscriber();
+  const adsObserver = new AdsSubscriber();
 
-const xmlNews = {
-  tag: 'news',
-  children: [
-    { tag: 'category', value: 'Video' },
-    { tag: 'headline', value: 'Video Breaking!' },
-    { tag: 'text', value: 'Watch this!' },
-    { tag: 'ref', value: 'YouTube' },
-    { tag: 'isRumor', value: 'false' },
-    { tag: 'mediaLink', value: 'http://video.com/1' },
-    { tag: 'sponsor', value: 'VideoAdCompany' },
-  ],
-};
+  publisher.attach(textObserver);
+  publisher.attach(videoObserver);
+  publisher.attach(adsObserver);
 
-const textObserver = new TextObserver();
-const videoObserver = new VideoObserver();
-const adsObserver = new AdsObserver();
+  return {
+    publisher,
+    textObserver,
+    videoObserver,
+    adsObserver,
+  };
+}
 
-publisher.attach(textObserver);
-publisher.attach(videoObserver);
-publisher.attach(adsObserver);
+// function adaptJson(): INewsDTO[] {
+//   const adapter = new JsonNewsMapper();
+//   return jsonDataset.map((data) => adapter.mapToDto(data));
+// }
 
-const jsonAdapter = new JsonNewsAdapter();
-const xmlAdapter = new XmlNewsAdapter();
-const jsonDTO = jsonAdapter.adapt(jsonNews);
-const xmlDTO = xmlAdapter.adapt(xmlNews);
+// function adaptXml(): INewsDTO[] {
+//   const adapter = new XmlNewsMapper();
+//   return xmlDataset.map((data) => adapter.mapToDto(data));
+// }
 
-const textFactory = new TextNewsFactory();
-const videoFactory = new VideoNewsFactory();
+function loadAllDto(): INewsDTO[] {
+  const jsonProvider = new JsonNewsAdapter(
+    new JsonClient(),
+  );
+  const xmlProvider = new XmlNewsAdapter(
+    new XmlClient(),
+  );
+  return [
+    ...jsonProvider.getNews(),
+    ...xmlProvider.getNews(),
+  ];
+}
 
-const textAdsNews = textFactory.createAds(jsonDTO);
-const textNews = textFactory.createRegular(jsonDTO);
+function createNews(dtoList: INewsDTO[]): News[] {
+  const textFactory = new TextNewsFactory();
+  const videoFactory = new VideoNewsFactory();
+  const result: News[] = [];
 
-const videoNews = videoFactory.createRegular(xmlDTO);
-const videoAdsNews = videoFactory.createAds(xmlDTO);
+  for (const dto of dtoList) {
+    try {
+      validateDTO(dto);
+      switch (dto.type) {
+        case 'text':
+          result.push(textFactory.createRegular(dto));
+          break;
+        case 'textAd':
+          result.push(textFactory.createAds(dto));
+          break;
+        case 'video':
+          result.push(videoFactory.createRegular(dto));
+          break;
+        case 'videoAd':
+          result.push(videoFactory.createAds(dto));
+          break;
+        default:
+          console.error('Main: Unknown dto: ', dto.type);
+      }
+    } catch (e) {
+      if (e instanceof Error) console.error('Main:', e.message, dto);
+    }
+  }
 
-publisher.addNews(textNews);
-publisher.addNews(videoNews);
-publisher.addNews(textAdsNews);
-publisher.addNews(videoAdsNews);
+  console.log(result.length);
+  return result;
+}
 
-console.log('------------All news in publisher------------');
-console.log(publisher.newsList);
+function publishAll(
+  publisher: NewsPublisher,
+  newsList: News[],
+) {
+  newsList.forEach((news) => {
+    publisher.addNews(news);
+  });
+}
 
-console.log('------------test observer------------');
-console.log('------------text observer------------');
-console.log('TextNews:', textObserver.textNews);
-console.log('------------ads observer------------');
-console.log('AdsNews:', adsObserver.adsNews);
-console.log('------------video observer------------');
-console.log('VideoNews:', videoObserver.videoNews);
+function printResult(
+  textObserver: TextSubscriber,
+  videoObserver: VideoSubscriber,
+  adsObserver: AdsSubscriber,
+) {
+  console.log('\n------- TEXT NEWS -------\n');
+  console.log(textObserver.textNews);
+
+  console.log('\n------- VIDEO NEWS -------\n');
+  console.log(videoObserver.videoNews);
+
+  console.log('\n------- ADS -------\n');
+  console.log(adsObserver.adsNews);
+}
+
+function main() {
+  const {
+    publisher,
+    textObserver,
+    videoObserver,
+    adsObserver,
+  } = createPublisher();
+
+  // const jsonDTO = adaptJson();
+  // const xmlDto = adaptXml();
+  // const allDto = [...jsonDTO, ...xmlDto];
+
+  const allDto = loadAllDto();
+
+  const allNews = createNews(allDto);
+
+  publishAll(publisher, allNews);
+  printResult(textObserver, videoObserver, adsObserver);
+}
+
+main();
