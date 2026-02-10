@@ -1,23 +1,6 @@
 import INewsDTO from '../adapters/INewsDTO';
 import InvalidDTOError from './InvalidDTOError';
 
-// export default function validateDTO(dto: INewsDTO) {
-//   if (!dto.type) {
-//     throw new InvalidDTOError('InvalidDTOError: Invalid type');
-//   }
-//
-//   if (!dto.title) {
-//     throw new InvalidDTOError('InvalidDTOError: Invalid title');
-//   }
-//   if (!dto.content) {
-//     throw new InvalidDTOError('InvalidDTOError:  Invalid content');
-//   }
-//   if (dto.type === 'video' && !dto.videoUrl) {
-//     throw new InvalidDTOError(`InvalidDTOError: Invalid videoUrl ${dto.videoUrl}`);
-//   }
-//   if (dto.type === 'videoAd' || dto.type === 'textAd') {
-//     if (dto.advertiser === '') throw new InvalidDTOError('InvalidDTOError: Invalid advertiser');
-//   }
 export default function validateDTO(dto: INewsDTO): void {
   if (!dto.type) {
     throw new InvalidDTOError('InvalidDTOError: Invalid type', dto);

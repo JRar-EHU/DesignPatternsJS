@@ -11,9 +11,9 @@ import JsonClient from './data/JsonClient';
 import XmlClient from './data/XmlClient';
 import JsonNewsAdapter from './adapters/JsonNewsAdapter';
 import XmlNewsAdapter from './adapters/XmlNewsAdapter';
-import JsonNewsMapper from "./adapters/JsonNewsMapper";
-import {jsonDataset, xmlDataset} from "./data/data";
-import XmlNewsMapper from "./adapters/XmlNewsMapper";
+import JsonNewsMapper from './adapters/JsonNewsMapper';
+import { jsonDataset, xmlDataset } from './data/data';
+import XmlNewsMapper from './adapters/XmlNewsMapper';
 
 function createPublisher() {
   const publisher = new NewsPublisher();
